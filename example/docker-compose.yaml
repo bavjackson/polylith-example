@@ -1,0 +1,33 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+  example_worker:
+    build:
+      context: .
+      dockerfile: example/development/dev.dockerfile
+    volumes:
+      - ./example/bases/my_namespace/example_worker:/app/example/bases/my_namespace/example_worker
+    command: faststream run my_namespace.example_worker.core:app --reload
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+  example_api:
+    build:
+      context: .
+      dockerfile: example/development/dev.dockerfile
+    volumes:
+      - ./example/bases/my_namespace/example_api:/app/example/bases/my_namespace/example_api
+    command: uvicorn my_namespace.example_api.core:app --reload --host 0.0.0.0
+    ports:
+      - 8000:8000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy

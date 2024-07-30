@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "example"
+version = "0.1.0"
+description = ""
+authors = ["bavjackson <33766488+bavjackson@users.noreply.github.com>"]
+readme = "README.md"
+packages = [
+    {include = 'my_namespace/events', from = 'example/components'},
+    {include = 'my_namespace/example_worker', from = 'example/bases'},
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.111.1"
+uvicorn = "^0.30.3"
+faststream = {extras = ["rabbit"], version = "^0.5.15"}
+pydantic = "^2.8.2"
+
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^3.2.6"
+isort = "^5.13.2"
+pytest = "^8.3.2"
+black = "^24.4.2"
+ipykernel = "^6.29.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
